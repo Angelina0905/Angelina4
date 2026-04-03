@@ -18,9 +18,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add EC2 to known_hosts
+        run: |
+          ssh-keyscan -H 13.211.175.163 >> ~/.ssh/known_hosts
+
       - name: Deploy ke EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@13.211.175.163 << 'EOF'
+          ssh ubuntu@13.211.175.163 << 'EOF'
           cd /var/www/Angelina4
           git pull origin main
           sudo systemctl restart nginx
