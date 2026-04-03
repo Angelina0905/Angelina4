@@ -1,4 +1,4 @@
-name: CI/CD CRUD Kesehatan
+name: DEPLOY KE EC2 FIX
 
 on:
   push:
