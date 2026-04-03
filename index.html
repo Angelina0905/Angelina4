@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Data Pasien</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f4f6f9; }
+    h1 { text-align: center; }
+    form, table { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    input { padding: 8px; margin: 5px; }
+    button { padding: 8px 12px; margin: 5px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background: #007bff; color: white; }
+  </style>
+</head>
+<body>
+
+<h1>Aplikasi CRUD Data Pasien</h1>
+
+<form id="formPasien">
+  <input type="hidden" id="index">
+  <input type="text" id="nama" placeholder="Nama" required>
+  <input type="number" id="umur" placeholder="Umur" required>
+  <input type="text" id="diagnosa" placeholder="Diagnosa" required>
+  <button type="submit">Simpan</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>Umur</th>
+      <th>Diagnosa</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="dataPasien"></tbody>
+</table>
+
+<script>
+  let data = JSON.parse(localStorage.getItem('pasien')) || [];
+
+  function render() {
+    const table = document.getElementById('dataPasien');
+    table.innerHTML = '';
+
+    data.forEach((item, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${item.nama}</td>
+          <td>${item.umur}</td>
+          <td>${item.diagnosa}</td>
+          <td>
+            <button onclick="editData(${index})">Edit</button>
+            <button onclick="hapusData(${index})">Hapus</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  document.getElementById('formPasien').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nama = document.getElementById('nama').value;
+    const umur = document.getElementById('umur').value;
+    const diagnosa = document.getElementById('diagnosa').value;
+    const index = document.getElementById('index').value;
+
+    if (index === '') {
+      data.push({ nama, umur, diagnosa });
+    } else {
+      data[index] = { nama, umur, diagnosa };
+      document.getElementById('index').value = '';
+    }
+
+    localStorage.setItem('pasien', JSON.stringify(data));
+    this.reset();
+    render();
+  });
+
+  function editData(i) {
+    document.getElementById('nama').value = data[i].nama;
+    document.getElementById('umur').value = data[i].umur;
+    document.getElementById('diagnosa').value = data[i].diagnosa;
+    document.getElementById('index').value = i;
+  }
+
+  function hapusData(i) {
+    if (confirm('Yakin ingin menghapus data?')) {
+      data.splice(i, 1);
+      localStorage.setItem('pasien', JSON.stringify(data));
+      render();
+    }
+  }
+
+  render();
+</script>
+
+</body>
+</html>
